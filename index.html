@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herramientas Escolares</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image:  
+                linear-gradient(rgba(241, 245, 249, 0.9), rgba(241, 245, 249, 0.9)),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20h15v40H20zM40 10h15v50H40zM60 25h15v35H60zM10 70h80v5H10z' fill='%2394a3b8' fill-opacity='0.1'/%3E%3Cpath d='M25 25v10M45 15v20M65 30v15' stroke='%2394a3b8' stroke-opacity='0.1' stroke-width='2'/%3E%3C/svg%3E");
+        }
+
+        .dark .bg-pattern {
+            background-color: #0f172a;
+            background-image: 
+                linear-gradient(rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.95)),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 20h15v40H20zM40 10h15v50H40zM60 25h15v35H60zM10 70h80v5H10z' fill='%23ffffff' fill-opacity='0.05'/%3E%3Cpath d='M25 25v10M45 15v20M65 30v15' stroke='%23ffffff' stroke-opacity='0.05' stroke-width='2'/%3E%3C/svg%3E");
+        }
+
+        .periodic-table {
+            display: grid;
+            grid-template-columns: repeat(18, minmax(0, 1fr));
+            gap: 2px;
+        }
+
+        .element {
+            aspect-ratio: 1 / 1.1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.1s;
+            position: relative;
+            border: 1px solid rgba(0,0,0,0.05);
+            padding: 2px;
+        }
+
+        .element:hover {
+            transform: scale(1.5);
+            z-index: 50;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            filter: brightness(1.05);
+            border-color: #6366f1;
+        }
+
+        .element-number { font-size: 0.55rem; font-weight: 700; align-self: flex-start; }
+        .element-symbol { font-size: 1.1rem; font-weight: 800; line-height: 1; }
+        .element-name { font-size: 0.45rem; font-weight: 600; text-align: center; margin-top: 1px; }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 140%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            width: 140px;
+            text-align: center;
+            font-size: 0.7rem;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .element:hover .tooltip { display: block; }
+    </style>
+</head>
+<body class="text-slate-900 dark:text-slate-100 bg-pattern min-h-screen transition-colors duration-300">
+    <div id="app" class="max-w-[1400px] mx-auto px-4 py-8">
+        
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div class="flex items-center space-x-4">
+                <div class="p-2 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <svg class="w-8 h-8 text-indigo-600 dark:text-indigo-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M6.5 2h11L19 4.5V20c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V4.5L6.5 2zM17 20V5H7v15h10zm-8-3h6v-2H9v2zm0-4h6v-2H9v2zm0-4h6V7H9v2z"/>
+                    </svg>
+                </div>
+                <h1 class="text-4xl font-black tracking-tight text-slate-800 dark:text-white" id="main-title">Herramientas Escolares</h1>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-white dark:bg-slate-800 shadow hover:bg-slate-50 dark:hover:bg-slate-700 transition border border-slate-200 dark:border-slate-700">
+                    <svg id="sun-icon" class="w-5 h-5 text-yellow-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.243 17.657l.707.707M7.757 6.343l.707-.707M12 5a7 7 0 100 14 7 7 0 000-14z"></path></svg>
+                    <svg id="moon-icon" class="w-5 h-5 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+                <button onclick="toggleLanguage()" id="lang-btn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold hover:bg-indigo-700 transition text-sm">English</button>
+            </div>
+        </header>
+
+        <main class="space-y-12">
+            <!-- Temporizador -->
+            <section class="bg-white/80 dark:bg-slate-800/80 p-8 rounded-3xl border border-white dark:border-slate-700 shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-2xl font-bold flex items-center dark:text-white" id="timer-title">
+                        <span class="mr-3 text-indigo-500">⏱️</span> Temporizador de Estudio
+                    </h3>
+                </div>
+                <div class="flex flex-col items-center justify-center py-4">
+                    <div class="text-7xl md:text-8xl font-black text-indigo-600 dark:text-indigo-400 mb-8 font-mono tracking-wider drop-shadow-sm" id="timer-display">25:00</div>
+                    <div class="flex space-x-4">
+                        <button onclick="toggleTimer()" id="timer-toggle-btn" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 dark:shadow-none text-lg w-40">Iniciar</button>
+                        <button onclick="resetAppTimer()" id="timer-reset-btn" class="px-8 py-4 bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 rounded-2xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition text-lg">Reiniciar</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabla Periódica -->
+            <section class="bg-white/90 backdrop-blur dark:bg-slate-800/90 p-6 rounded-2xl shadow-xl border border-white/50 dark:border-slate-700 overflow-x-auto">
+                <div class="flex items-center mb-6">
+                    <div class="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg mr-3">
+                        <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-300" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M14.5,3h-5c-0.55,0-1,0.45-1,1v2.53C6.1,8.32,5,11.03,5,14c0,3.87,3.13,7,7,7s7-3.13,7-7c0-2.97-1.1-5.68-3.5-7.47V4 C15.5,3.45,15.05,3,14.5,3z M12,19c-2.76,0-5-2.24-5-5c0-1.74,0.89-3.28,2.25-4.17l1.01-0.66V5h3.48v4.17l1.01,0.66 C16.11,10.72,17,12.26,17,14C17,16.76,14.76,19,12,19z"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-black dark:text-white uppercase tracking-tight" id="pt-title">Tabla Periódica Interactiva</h2>
+                </div>
+
+                <!-- Tabla Principal -->
+                <div id="periodic-table" class="periodic-table min-w-[1100px] mb-8"></div>
+
+                <!-- Espaciador -->
+                <div class="h-8"></div>
+
+                <!-- Series Inferiores -->
+                <div id="f-block" class="periodic-table min-w-[1100px] max-w-[80%] mx-auto"></div>
+
+                <!-- Información de la Tabla Periódica -->
+                <div class="grid md:grid-cols-2 gap-10 pt-10 border-t border-slate-200 dark:border-slate-700 mt-12">
+                    <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white dark:border-slate-800">
+                        <h3 class="text-xl font-bold mb-4 dark:text-indigo-300 flex items-center" id="inventor-title">
+                            <span class="mr-2">👨‍🔬</span> ¿Quién la inventó?
+                        </h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed" id="inventor-desc">
+                            Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.
+                        </p>
+                    </div>
+                    <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white dark:border-slate-800">
+                        <h3 class="text-xl font-bold mb-4 dark:text-emerald-300 flex items-center" id="how-works-title">
+                            <span class="mr-2">📖</span> ¿Cómo funciona?
+                        </h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed" id="how-works-desc">
+                            Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calculadora -->
+            <section class="bg-white/80 dark:bg-slate-800/80 p-8 rounded-3xl border border-white dark:border-slate-700 shadow-xl">
+                <h3 class="text-2xl font-bold mb-8 flex items-center dark:text-white" id="calc-title">Calculadora de Promedio</h3>
+                <div id="subjects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+                <div class="flex flex-col sm:flex-row items-center justify-between border-t dark:border-slate-700 pt-8 gap-6">
+                    <div class="text-center sm:text-left">
+                        <span class="text-sm uppercase font-bold text-slate-500 block mb-1" id="result-label">Promedio Final</span>
+                        <div class="text-6xl font-black text-indigo-600 dark:text-indigo-400" id="final-average">0.00</div>
+                    </div>
+                    <button onclick="resetCalculator()" id="reset-btn" class="px-8 py-4 bg-rose-100 text-rose-600 rounded-2xl font-bold hover:bg-rose-200 transition text-lg border border-rose-200">Reiniciar</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let currentLang = 'es';
+        let isDarkMode = false;
+
+        const colors = {
+            blue: '#e0f2fe',     // Hidrógeno, Alcalinos, Otros
+            red: '#fee2e2',      // Alcalinotérreos, Halógenos, Gases Nobles
+            purple: '#f3e8ff',   // Metales de transición
+            green: '#dcfce7',    // Metaloides, No metales
+            yellow: '#fef9c3',   // Metales post-transición
+            orange: '#ffedd5',   // Lantánidos
+            brown: '#f5f5f4'     // Actínidos
+        };
+
+        const elements = [
+            // Fila 1
+            { n: 1, s: 'H', name: 'Hidrógeno', en: 'Hydrogen', pos: [1, 1], c: colors.blue },
+            { n: 2, s: 'He', name: 'Helio', en: 'Helium', pos: [1, 18], c: colors.red },
+            // Fila 2
+            { n: 3, s: 'Li', name: 'Litio', en: 'Lithium', pos: [2, 1], c: colors.blue },
+            { n: 4, s: 'Be', name: 'Berilio', en: 'Beryllium', pos: [2, 2], c: colors.red },
+            { n: 5, s: 'B', name: 'Boro', en: 'Boron', pos: [2, 13], c: colors.yellow },
+            { n: 6, s: 'C', name: 'Carbono', en: 'Carbon', pos: [2, 14], c: colors.blue },
+            { n: 7, s: 'N', name: 'Nitrógeno', en: 'Nitrogen', pos: [2, 15], c: colors.blue },
+            { n: 8, s: 'O', name: 'Oxígeno', en: 'Oxygen', pos: [2, 16], c: colors.blue },
+            { n: 9, s: 'F', name: 'Flúor', en: 'Fluorine', pos: [2, 17], c: colors.blue },
+            { n: 10, s: 'Ne', name: 'Neón', en: 'Neon', pos: [2, 18], c: colors.red },
+            // Fila 3
+            { n: 11, s: 'Na', name: 'Sodio', en: 'Sodium', pos: [3, 1], c: colors.blue },
+            { n: 12, s: 'Mg', name: 'Magnesio', en: 'Magnesium', pos: [3, 2], c: colors.red },
+            { n: 13, s: 'Al', name: 'Aluminio', en: 'Aluminum', pos: [3, 13], c: colors.green },
+            { n: 14, s: 'Si', name: 'Silicio', en: 'Silicon', pos: [3, 14], c: colors.yellow },
+            { n: 15, s: 'P', name: 'Fósforo', en: 'Phosphorus', pos: [3, 15], c: colors.blue },
+            { n: 16, s: 'S', name: 'Azufre', en: 'Sulfur', pos: [3, 16], c: colors.blue },
+            { n: 17, s: 'Cl', name: 'Cloro', en: 'Chlorine', pos: [3, 17], c: colors.blue },
+            { n: 18, s: 'Ar', name: 'Argón', en: 'Argon', pos: [3, 18], c: colors.red },
+            // Fila 4
+            { n: 19, s: 'K', name: 'Potasio', en: 'Potassium', pos: [4, 1], c: colors.blue },
+            { n: 20, s: 'Ca', name: 'Calcio', en: 'Calcium', pos: [4, 2], c: colors.red },
+            { n: 21, s: 'Sc', name: 'Escandio', en: 'Scandium', pos: [4, 3], c: colors.purple },
+            { n: 22, s: 'Ti', name: 'Titanio', en: 'Titanium', pos: [4, 4], c: colors.purple },
+            { n: 23, s: 'V', name: 'Vanadio', en: 'Vanadium', pos: [4, 5], c: colors.purple },
+            { n: 24, s: 'Cr', name: 'Cromo', en: 'Chromium', pos: [4, 6], c: colors.purple },
+            { n: 25, s: 'Mn', name: 'Manganeso', en: 'Manganese', pos: [4, 7], c: colors.purple },
+            { n: 26, s: 'Fe', name: 'Hierro', en: 'Iron', pos: [4, 8], c: colors.purple },
+            { n: 27, s: 'Co', name: 'Cobalto', en: 'Cobalt', pos: [4, 9], c: colors.purple },
+            { n: 28, s: 'Ni', name: 'Níquel', en: 'Nickel', pos: [4, 10], c: colors.purple },
+            { n: 29, s: 'Cu', name: 'Cobre', en: 'Copper', pos: [4, 11], c: colors.purple },
+            { n: 30, s: 'Zn', name: 'Zinc', en: 'Zinc', pos: [4, 12], c: colors.purple },
+            { n: 31, s: 'Ga', name: 'Galio', en: 'Gallium', pos: [4, 13], c: colors.green },
+            { n: 32, s: 'Ge', name: 'Germanio', en: 'Germanium', pos: [4, 14], c: colors.yellow },
+            { n: 33, s: 'As', name: 'Arsénico', en: 'Arsenic', pos: [4, 15], c: colors.yellow },
+            { n: 34, s: 'Se', name: 'Selenio', en: 'Selenium', pos: [4, 16], c: colors.blue },
+            { n: 35, s: 'Br', name: 'Bromo', en: 'Bromine', pos: [4, 17], c: colors.blue },
+            { n: 36, s: 'Kr', name: 'Kriptón', en: 'Krypton', pos: [4, 18], c: colors.red },
+            // Fila 5
+            { n: 37, s: 'Rb', name: 'Rubidio', en: 'Rubidium', pos: [5, 1], c: colors.blue },
+            { n: 38, s: 'Sr', name: 'Estroncio', en: 'Strontium', pos: [5, 2], c: colors.red },
+            { n: 39, s: 'Y', name: 'Itrio', en: 'Yttrium', pos: [5, 3], c: colors.purple },
+            { n: 40, s: 'Zr', name: 'Circonio', en: 'Zirconium', pos: [5, 4], c: colors.purple },
+            { n: 41, s: 'Nb', name: 'Niobio', en: 'Niobium', pos: [5, 5], c: colors.purple },
+            { n: 42, s: 'Mo', name: 'Molibdeno', en: 'Molybdenum', pos: [5, 6], c: colors.purple },
+            { n: 43, s: 'Tc', name: 'Tecnecio', en: 'Technetium', pos: [5, 7], c: colors.purple },
+            { n: 44, s: 'Ru', name: 'Rutenio', en: 'Ruthenium', pos: [5, 8], c: colors.purple },
+            { n: 45, s: 'Rh', name: 'Rodio', en: 'Rhodium', pos: [5, 9], c: colors.purple },
+            { n: 46, s: 'Pd', name: 'Paladio', en: 'Palladium', pos: [5, 10], c: colors.purple },
+            { n: 47, s: 'Ag', name: 'Plata', en: 'Silver', pos: [5, 11], c: colors.purple },
+            { n: 48, s: 'Cd', name: 'Cadmio', en: 'Cadmium', pos: [5, 12], c: colors.purple },
+            { n: 49, s: 'In', name: 'Indio', en: 'Indium', pos: [5, 13], c: colors.green },
+            { n: 50, s: 'Sn', name: 'Estaño', en: 'Tin', pos: [5, 14], c: colors.green },
+            { n: 51, s: 'Sb', name: 'Antimonio', en: 'Antimony', pos: [5, 15], c: colors.yellow },
+            { n: 52, s: 'Te', name: 'Telurio', en: 'Tellurium', pos: [5, 16], c: colors.yellow },
+            { n: 53, s: 'I', name: 'Yodo', en: 'Iodine', pos: [5, 17], c: colors.blue },
+            { n: 54, s: 'Xe', name: 'Xenón', en: 'Xenon', pos: [5, 18], c: colors.red },
+            // Fila 6
+            { n: 55, s: 'Cs', name: 'Cesio', en: 'Cesium', pos: [6, 1], c: colors.blue },
+            { n: 56, s: 'Ba', name: 'Bario', en: 'Barium', pos: [6, 2], c: colors.red },
+            { n: 57, s: 'La', name: 'Lantano', en: 'Lanthanum', pos: [6, 3], c: colors.blue },
+            { n: 72, s: 'Hf', name: 'Hafnio', en: 'Hafnium', pos: [6, 4], c: colors.purple },
+            { n: 73, s: 'Ta', name: 'Tántalo', en: 'Tantalum', pos: [6, 5], c: colors.purple },
+            { n: 74, s: 'W', name: 'Tungsteno', en: 'Tungsten', pos: [6, 6], c: colors.purple },
+            { n: 75, s: 'Re', name: 'Renio', en: 'Rhenium', pos: [6, 7], c: colors.purple },
+            { n: 76, s: 'Os', name: 'Osmio', en: 'Osmium', pos: [6, 8], c: colors.purple },
+            { n: 77, s: 'Ir', name: 'Iridio', en: 'Iridium', pos: [6, 9], c: colors.purple },
+            { n: 78, s: 'Pt', name: 'Platino', en: 'Platinum', pos: [6, 10], c: colors.purple },
+            { n: 79, s: 'Au', name: 'Oro', en: 'Gold', pos: [6, 11], c: colors.purple },
+            { n: 80, s: 'Hg', name: 'Mercurio', en: 'Mercury', pos: [6, 12], c: colors.purple },
+            { n: 81, s: 'Tl', name: 'Talio', en: 'Thallium', pos: [6, 13], c: colors.green },
+            { n: 82, s: 'Pb', name: 'Plomo', en: 'Lead', pos: [6, 14], c: colors.green },
+            { n: 83, s: 'Bi', name: 'Bismuto', en: 'Bismuth', pos: [6, 15], c: colors.green },
+            { n: 84, s: 'Po', name: 'Polonio', en: 'Polonium', pos: [6, 16], c: colors.green },
+            { n: 85, s: 'At', name: 'Astato', en: 'Astatine', pos: [6, 17], c: colors.green },
+            { n: 86, s: 'Rn', name: 'Radón', en: 'Radon', pos: [6, 18], c: colors.red },
+            // Fila 7
+            { n: 87, s: 'Fr', name: 'Francio', en: 'Francium', pos: [7, 1], c: colors.blue },
+            { n: 88, s: 'Ra', name: 'Radio', en: 'Radium', pos: [7, 2], c: colors.red },
+            { n: 89, s: 'Ac', name: 'Actinio', en: 'Actinium', pos: [7, 3], c: colors.orange },
+            { n: 104, s: 'Rf', name: 'Rutherfordio', en: 'Rutherfordium', pos: [7, 4], c: colors.purple },
+            { n: 105, s: 'Db', name: 'Dubnio', en: 'Dubnium', pos: [7, 5], c: colors.purple },
+            { n: 106, s: 'Sg', name: 'Seaborgio', en: 'Seaborgium', pos: [7, 6], c: colors.purple },
+            { n: 107, s: 'Bh', name: 'Bohrio', en: 'Bohrium', pos: [7, 7], c: colors.purple },
+            { n: 108, s: 'Hs', name: 'Hasio', en: 'Hassium', pos: [7, 8], c: colors.purple },
+            { n: 109, s: 'Mt', name: 'Meitnerio', en: 'Meitnerium', pos: [7, 9], c: colors.purple },
+            { n: 110, s: 'Ds', name: 'Darmstatio', en: 'Darmstadtium', pos: [7, 10], c: colors.purple },
+            { n: 111, s: 'Rg', name: 'Roentgenio', en: 'Roentgenium', pos: [7, 11], c: colors.purple },
+            { n: 112, s: 'Cn', name: 'Copernicio', en: 'Copernicium', pos: [7, 12], c: colors.purple },
+            { n: 113, s: 'Nh', name: 'Nihonio', en: 'Nihonium', pos: [7, 13], c: colors.purple },
+            { n: 114, s: 'Fl', name: 'Flerovio', en: 'Flerovium', pos: [7, 14], c: colors.purple },
+            { n: 115, s: 'Mc', name: 'Moscovio', en: 'Moscovium', pos: [7, 15], c: colors.purple },
+            { n: 116, s: 'Lv', name: 'Livermorio', en: 'Livermorium', pos: [7, 16], c: colors.purple },
+            { n: 117, s: 'Ts', name: 'Teneso', en: 'Tennessine', pos: [7, 17], c: colors.purple },
+            { n: 118, s: 'Og', name: 'Oganesón', en: 'Oganesson', pos: [7, 18], c: colors.purple },
+        ];
+
+        const fBlockElements = [
+            // Lantánidos (58-71)
+            { n: 58, s: 'Ce', name: 'Cerio', en: 'Cerium', pos: [1, 1], c: colors.blue },
+            { n: 59, s: 'Pr', name: 'Praseodimio', en: 'Praseodymium', pos: [1, 2], c: colors.blue },
+            { n: 60, s: 'Nd', name: 'Neodimio', en: 'Neodymium', pos: [1, 3], c: colors.blue },
+            { n: 61, s: 'Pm', name: 'Prometio', en: 'Promethium', pos: [1, 4], c: colors.blue },
+            { n: 62, s: 'Sm', name: 'Samario', en: 'Samarium', pos: [1, 5], c: colors.blue },
+            { n: 63, s: 'Eu', name: 'Europio', en: 'Europium', pos: [1, 6], c: colors.blue },
+            { n: 64, s: 'Gd', name: 'Gadolinio', en: 'Gadolinium', pos: [1, 7], c: colors.blue },
+            { n: 65, s: 'Tb', name: 'Terbio', en: 'Terbium', pos: [1, 8], c: colors.blue },
+            { n: 66, s: 'Dy', name: 'Disprosio', en: 'Dysprosium', pos: [1, 9], c: colors.blue },
+            { n: 67, s: 'Ho', name: 'Holmio', en: 'Holmium', pos: [1, 10], c: colors.blue },
+            { n: 68, s: 'Er', name: 'Erbio', en: 'Erbium', pos: [1, 11], c: colors.blue },
+            { n: 69, s: 'Tm', name: 'Tulio', en: 'Thulium', pos: [1, 12], c: colors.blue },
+            { n: 70, s: 'Yb', name: 'Iterbio', en: 'Ytterbium', pos: [1, 13], c: colors.blue },
+            { n: 71, s: 'Lu', name: 'Lutecio', en: 'Lutetium', pos: [1, 14], c: colors.blue },
+            // Actínidos (90-103)
+            { n: 90, s: 'Th', name: 'Torio', en: 'Thorium', pos: [2, 1], c: colors.orange },
+            { n: 91, s: 'Pa', name: 'Protactinio', en: 'Protactinium', pos: [2, 2], c: colors.orange },
+            { n: 92, s: 'U', name: 'Uranio', en: 'Uranium', pos: [2, 3], c: colors.orange },
+            { n: 93, s: 'Np', name: 'Neptunio', en: 'Neptunium', pos: [2, 4], c: colors.orange },
+            { n: 94, s: 'Pu', name: 'Plutonio', en: 'Plutonium', pos: [2, 5], c: colors.orange },
+            { n: 95, s: 'Am', name: 'Americio', en: 'Americium', pos: [2, 6], c: colors.orange },
+            { n: 96, s: 'Cm', name: 'Curio', en: 'Curium', pos: [2, 7], c: colors.orange },
+            { n: 97, s: 'Bk', name: 'Berkelio', en: 'Berkelium', pos: [2, 8], c: colors.orange },
+            { n: 98, s: 'Cf', name: 'Californio', en: 'Californium', pos: [2, 9], c: colors.orange },
+            { n: 99, s: 'Es', name: 'Einstenio', en: 'Einsteinium', pos: [2, 10], c: colors.orange },
+            { n: 100, s: 'Fm', name: 'Fermio', en: 'Fermium', pos: [2, 11], c: colors.orange },
+            { n: 101, s: 'Md', name: 'Mendelevio', en: 'Mendelevium', pos: [2, 12], c: colors.orange },
+            { n: 102, s: 'No', name: 'Nobelio', en: 'Nobelium', pos: [2, 13], c: colors.orange },
+            { n: 103, s: 'Lr', name: 'Laurencio', en: 'Lawrencium', pos: [2, 14], c: colors.orange },
+        ];
+
+        const subjects = [
+            { id: 'math', es: 'Matemáticas', en: 'Mathematics' },
+            { id: 'science', es: 'Ciencias Naturales', en: 'Science' },
+            { id: 'history', es: 'Historia', en: 'History' },
+            { id: 'lang', es: 'Lengua y Literatura', en: 'Language & Lit.' },
+            { id: 'eng', es: 'Inglés', en: 'English' },
+            { id: 'cs', es: 'Informática', en: 'Computer Science' },
+            { id: 'art', es: 'Arte', en: 'Arts' },
+            { id: 'geo', es: 'Geografía', en: 'Geography' },
+            { id: 'phys', es: 'Educación Física', en: 'Phys. Ed.' },
+            { id: 'civic', es: 'Cívica', en: 'Civics' },
+            { id: 'chem', es: 'Química', en: 'Chemistry' },
+            { id: 'physc', es: 'Física', en: 'Physics' }
+        ];
+
+        const translations = {
+            es: {
+                title: "Herramientas Escolares",
+                calcTitle: "Calculadora de Promedio",
+                resultLabel: "Promedio Final",
+                resetBtn: "Reiniciar",
+                ptTitle: "Tabla Periódica Interactiva",
+                timerTitle: "Temporizador de Estudio",
+                startBtn: "Iniciar",
+                pauseBtn: "Pausar",
+                timerResetBtn: "Reiniciar",
+                inventorTitle: "¿Quién la inventó?",
+                inventorDesc: "Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.",
+                howWorksTitle: "¿Cómo funciona?",
+                howWorksDesc: "Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares."
+            },
+            en: {
+                title: "School Tools",
+                calcTitle: "Average Calculator",
+                resultLabel: "Final Average",
+                resetBtn: "Reset",
+                ptTitle: "Interactive Periodic Table",
+                timerTitle: "Study Timer",
+                startBtn: "Start",
+                pauseBtn: "Pause",
+                timerResetBtn: "Reset",
+                inventorTitle: "Who invented it?",
+                inventorDesc: "It was primarily designed by the Russian chemist Dmitri Mendeleev in 1869, who organized known elements by atomic mass and predicted undiscovered ones.",
+                howWorksTitle: "How does it work?",
+                howWorksDesc: "It organizes elements in rows (periods) and columns (groups) based on atomic number. Elements in the same column usually have similar chemical properties."
+            }
+        };
+
+        // --- Timer State ---
+        let timerInterval;
+        let timeLeft = 1500; // 25 minutos
+        let isTimerRunning = false;
+
+        function init() {
+            renderPeriodicTable();
+            renderCalculator();
+            updateLanguageUI();
+            updateTimerDisplay();
+        }
+
+        // --- Timer Functions ---
+        function updateTimerDisplay() {
+            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+            const s = (timeLeft % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${m}:${s}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-toggle-btn');
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btn.innerText = translations[currentLang].startBtn;
+                btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            } else {
+                isTimerRunning = true;
+                btn.innerText = translations[currentLang].pauseBtn;
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                btn.classList.add('bg-amber-500', 'hover:bg-amber-600');
+                
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        btn.innerText = translations[currentLang].startBtn;
+                        btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+                        btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                        // Efecto visual al terminar
+                        const display = document.getElementById('timer-display');
+                        display.classList.add('text-rose-500');
+                        setTimeout(() => display.classList.remove('text-rose-500'), 3000);
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetAppTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timeLeft = 1500; // Reset a 25 mins
+            updateTimerDisplay();
+            
+            const btn = document.getElementById('timer-toggle-btn');
+            btn.innerText = translations[currentLang].startBtn;
+            btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+            btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+        }
+
+        function renderPeriodicTable() {
+            const table = document.getElementById('periodic-table');
+            const fBlock = document.getElementById('f-block');
+            
+            elements.forEach(el => table.appendChild(createElementCard(el)));
+            fBlockElements.forEach(el => fBlock.appendChild(createElementCard(el)));
+        }
+
+        function createElementCard(el) {
+            const card = document.createElement('div');
+            card.className = 'element';
+            card.style.gridRow = el.pos[0];
+            card.style.gridColumn = el.pos[1];
+            card.style.backgroundColor = el.c;
+            card.style.color = getContrastColor(el.c);
+            
+            card.innerHTML = `
+                <span class="element-number">${el.n}</span>
+                <span class="element-symbol">${el.s}</span>
+                <span class="element-name">${currentLang === 'es' ? el.name : el.en}</span>
+                <div class="tooltip">Elemento ${el.n}: ${el.name}</div>
+            `;
+            return card;
+        }
+
+        function getContrastColor(hex) {
+            // Basado en el color de la imagen (texto oscuro para todos excepto quizás actínidos muy oscuros)
+            // Aquí simplificamos para que combine con la estética de la imagen
+            if (hex === colors.purple) return '#581c87';
+            if (hex === colors.blue) return '#0369a1';
+            if (hex === colors.red) return '#b91c1c';
+            if (hex === colors.yellow) return '#a16207';
+            if (hex === colors.green) return '#15803d';
+            if (hex === colors.orange) return '#9a3412';
+            return '#1e293b';
+        }
+
+        function renderCalculator() {
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+            subjects.forEach(s => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label class="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">${s[currentLang]}</label>
+                    <input type="number" min="0" max="100" oninput="calculateAverage()" class="grade-input w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-lg outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white" placeholder="0-100">
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function calculateAverage() {
+            const inputs = document.querySelectorAll('.grade-input');
+            let total = 0, count = 0;
+            inputs.forEach(i => {
+                let val = parseFloat(i.value);
+                if(!isNaN(val)) {
+                    if(val > 100) { val = 100; i.value = 100; }
+                    if(val < 0) { val = 0; i.value = 0; }
+                    total += val; 
+                    count++; 
+                }
+            });
+            document.getElementById('final-average').innerText = count ? (total/count).toFixed(2) : '0.00';
+        }
+
+        function resetCalculator() {
+            document.querySelectorAll('.grade-input').forEach(i => i.value = '');
+            calculateAverage();
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark');
+            document.getElementById('sun-icon').classList.toggle('hidden');
+            document.getElementById('moon-icon').classList.toggle('hidden');
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            document.getElementById('periodic-table').innerHTML = '';
+            document.getElementById('f-block').innerHTML = '';
+            renderPeriodicTable();
+            renderCalculator();
+            updateLanguageUI();
+        }
+
+        function updateLanguageUI() {
+            const t = translations[currentLang];
+            document.getElementById('main-title').innerText = t.title;
+            document.getElementById('calc-title').innerText = t.calcTitle;
+            document.getElementById('result-label').innerText = t.resultLabel;
+            document.getElementById('reset-btn').innerText = t.resetBtn;
+            document.getElementById('pt-title').innerText = t.ptTitle;
+            
+            // Textos del temporizador y de la tabla
+            document.getElementById('timer-title').innerHTML = `<span class="mr-3 text-indigo-500">⏱️</span> ${t.timerTitle}`;
+            document.getElementById('timer-toggle-btn').innerText = isTimerRunning ? t.pauseBtn : t.startBtn;
+            document.getElementById('timer-reset-btn').innerText = t.timerResetBtn;
+            document.getElementById('inventor-title').innerHTML = `<span class="mr-2">👨‍🔬</span> ${t.inventorTitle}`;
+            document.getElementById('inventor-desc').innerText = t.inventorDesc;
+            document.getElementById('how-works-title').innerHTML = `<span class="mr-2">📖</span> ${t.howWorksTitle}`;
+            document.getElementById('how-works-desc').innerText = t.howWorksDesc;
+
+            document.getElementById('lang-btn').innerText = currentLang === 'es' ? 'English' : 'Español';
+        }
+
+        init();
+    </script>
+</body>
+</html>
