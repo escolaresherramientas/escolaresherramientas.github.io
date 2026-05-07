@@ -175,6 +175,44 @@
                     <button onclick="resetCalculator()" id="reset-btn" class="px-8 py-4 bg-rose-100 text-rose-600 rounded-2xl font-bold hover:bg-rose-200 transition text-lg border border-rose-200">Reiniciar</button>
                 </div>
             </section>
+
+            <!-- Convertidor de Medidas -->
+            <section class="bg-white/80 dark:bg-slate-800/80 p-8 rounded-3xl border border-white dark:border-slate-700 shadow-xl">
+                <div class="flex items-center mb-6">
+                    <h3 class="text-2xl font-bold flex items-center dark:text-white" id="conv-title">
+                        <span class="mr-3 text-indigo-500">🔄</span> Convertidor de Medidas
+                    </h3>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-end">
+                    <!-- Categoría -->
+                    <div class="col-span-1 md:col-span-3">
+                        <label class="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2" id="conv-cat-label">Categoría</label>
+                        <select id="conv-category" onchange="populateConvUnits()" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-lg outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white cursor-pointer font-semibold shadow-sm">
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+
+                    <!-- Lado 1 -->
+                    <div class="flex flex-col gap-3">
+                        <select id="conv-unit-1" onchange="convertValues('1')" class="w-full p-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-md outline-none focus:border-indigo-500 dark:text-white cursor-pointer font-semibold shadow-sm text-center">
+                        </select>
+                        <input type="number" id="conv-input-1" oninput="convertValues('1')" value="1" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-3xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-black text-center text-indigo-600 dark:text-indigo-400">
+                    </div>
+
+                    <!-- Icono Intercambio -->
+                    <div class="flex items-center justify-center pb-6">
+                        <svg class="w-10 h-10 text-slate-300 dark:text-slate-600 rotate-90 md:rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                    </div>
+
+                    <!-- Lado 2 -->
+                    <div class="flex flex-col gap-3">
+                        <select id="conv-unit-2" onchange="convertValues('1')" class="w-full p-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-md outline-none focus:border-indigo-500 dark:text-white cursor-pointer font-semibold shadow-sm text-center">
+                        </select>
+                        <input type="number" id="conv-input-2" oninput="convertValues('2')" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-3xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-black text-center text-indigo-600 dark:text-indigo-400">
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -354,7 +392,24 @@
                 inventorTitle: "¿Quién la inventó?",
                 inventorDesc: "Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.",
                 howWorksTitle: "¿Cómo funciona?",
-                howWorksDesc: "Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares."
+                howWorksDesc: "Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares.",
+                convTitle: "Convertidor de Medidas",
+                convCatLabel: "Categoría",
+                catLength: "📏 Longitud y Distancia",
+                catWeight: "⚖️ Peso y Masa",
+                catTemp: "🌡️ Temperatura",
+                catVol: "💧 Volumen y Capacidad",
+                catData: "💾 Almacenamiento de Datos",
+                catTime: "⏱️ Tiempo y Velocidad",
+                units: {
+                    km: "Kilómetros (km)", m: "Metros (m)", mi: "Millas (mi)", ft: "Pies (ft)", cm: "Centímetros (cm)", in: "Pulgadas (in)", yd: "Yardas (yd)",
+                    kg: "Kilogramos (kg)", lb: "Libras (lb)", g: "Gramos (g)", oz: "Onzas (oz)", t: "Toneladas (t)",
+                    c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)",
+                    l: "Litros (L)", gal: "Galones americanos (gal)", ml: "Mililitros (ml)", floz: "Onzas líquidas (fl oz)", m3: "Metros cúbicos (m³)",
+                    mb: "Megabytes (MB)", gb: "Gigabytes (GB)", tb: "Terabytes (TB)", kb: "Kilobytes (KB)",
+                    hr: "Horas", min: "Minutos", sec: "Segundos", day: "Días", week: "Semanas", month: "Meses",
+                    kmh: "Kilómetros por hora (km/h)", mph: "Millas por hora (mph)", ms: "Metros por segundo (m/s)"
+                }
             },
             en: {
                 title: "School Tools",
@@ -369,7 +424,45 @@
                 inventorTitle: "Who invented it?",
                 inventorDesc: "It was primarily designed by the Russian chemist Dmitri Mendeleev in 1869, who organized known elements by atomic mass and predicted undiscovered ones.",
                 howWorksTitle: "How does it work?",
-                howWorksDesc: "It organizes elements in rows (periods) and columns (groups) based on atomic number. Elements in the same column usually have similar chemical properties."
+                howWorksDesc: "It organizes elements in rows (periods) and columns (groups) based on atomic number. Elements in the same column usually have similar chemical properties.",
+                convTitle: "Unit Converter",
+                convCatLabel: "Category",
+                catLength: "📏 Length & Distance",
+                catWeight: "⚖️ Weight & Mass",
+                catTemp: "🌡️ Temperature",
+                catVol: "💧 Volume & Capacity",
+                catData: "💾 Data Storage",
+                catTime: "⏱️ Time & Speed",
+                units: {
+                    km: "Kilometers (km)", m: "Meters (m)", mi: "Miles (mi)", ft: "Feet (ft)", cm: "Centimeters (cm)", in: "Inches (in)", yd: "Yards (yd)",
+                    kg: "Kilograms (kg)", lb: "Pounds (lb)", g: "Grams (g)", oz: "Ounces (oz)", t: "Tons (t)",
+                    c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)",
+                    l: "Liters (L)", gal: "US Gallons (gal)", ml: "Milliliters (ml)", floz: "Fluid Ounces (fl oz)", m3: "Cubic Meters (m³)",
+                    mb: "Megabytes (MB)", gb: "Gigabytes (GB)", tb: "Terabytes (TB)", kb: "Kilobytes (KB)",
+                    hr: "Hours", min: "Minutes", sec: "Seconds", day: "Days", week: "Weeks", month: "Months",
+                    kmh: "Kilometers per hour (km/h)", mph: "Miles per hour (mph)", ms: "Meters per second (m/s)"
+                }
+            }
+        };
+
+        // --- Converter State & Rates ---
+        const convCategories = [
+            { id: 'length', nameEs: 'catLength', units: ['km', 'm', 'mi', 'ft', 'cm', 'in', 'yd'] },
+            { id: 'weight', nameEs: 'catWeight', units: ['kg', 'lb', 'g', 'oz', 't'] },
+            { id: 'temp', nameEs: 'catTemp', units: ['c', 'f', 'k'] },
+            { id: 'vol', nameEs: 'catVol', units: ['l', 'gal', 'ml', 'floz', 'm3'] },
+            { id: 'data', nameEs: 'catData', units: ['mb', 'gb', 'tb', 'kb'] },
+            { id: 'time', nameEs: 'catTime', units: ['hr', 'min', 'sec', 'day', 'week', 'month', 'kmh', 'mph', 'ms'] } // Tiempo y velocidad agrupados
+        ];
+
+        const conversionRates = {
+            length: { m: 1, km: 1000, mi: 1609.344, ft: 0.3048, cm: 0.01, in: 0.0254, yd: 0.9144 },
+            weight: { kg: 1, lb: 0.45359237, g: 0.001, oz: 0.02834952, t: 1000 },
+            vol: { l: 1, gal: 3.78541, ml: 0.001, floz: 0.0295735, m3: 1000 },
+            data: { mb: 1, gb: 1024, tb: 1048576, kb: 1/1024 },
+            time: { 
+                hr: 1, min: 1/60, sec: 1/3600, day: 24, week: 168, month: 730.001, // Time based in hours
+                kmh: 1, mph: 1.609344, ms: 3.6 // Speed treated similarly structurally (isolated from time formulas below if needed, but handled by direct scalar mult)
             }
         };
 
@@ -381,6 +474,7 @@
         function init() {
             renderPeriodicTable();
             renderCalculator();
+            populateConvCategories();
             updateLanguageUI();
             updateTimerDisplay();
         }
@@ -435,6 +529,96 @@
             btn.innerText = translations[currentLang].startBtn;
             btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
             btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+        }
+
+        // --- Converter Functions ---
+        function populateConvCategories() {
+            const select = document.getElementById('conv-category');
+            select.innerHTML = '';
+            convCategories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.innerText = translations[currentLang][cat.nameEs];
+                select.appendChild(opt);
+            });
+            populateConvUnits();
+        }
+
+        function populateConvUnits() {
+            const catId = document.getElementById('conv-category').value;
+            const category = convCategories.find(c => c.id === catId);
+            const select1 = document.getElementById('conv-unit-1');
+            const select2 = document.getElementById('conv-unit-2');
+            
+            const prev1 = select1.value;
+            const prev2 = select2.value;
+
+            select1.innerHTML = '';
+            select2.innerHTML = '';
+
+            category.units.forEach(u => {
+                const name = translations[currentLang].units[u];
+                select1.add(new Option(name, u));
+                select2.add(new Option(name, u));
+            });
+
+            if (category.units.includes(prev1)) select1.value = prev1;
+            else select1.selectedIndex = 0;
+            
+            if (category.units.includes(prev2)) select2.value = prev2;
+            else select2.selectedIndex = category.units.length > 1 ? 1 : 0;
+
+            convertValues('1');
+        }
+
+        function convertValues(source) {
+            const catId = document.getElementById('conv-category').value;
+            const u1 = document.getElementById('conv-unit-1').value;
+            const u2 = document.getElementById('conv-unit-2').value;
+            const i1 = document.getElementById('conv-input-1');
+            const i2 = document.getElementById('conv-input-2');
+
+            // Handling mixing of Time and Speed metrics natively without overlapping errors 
+            // since their scalar base values don't naturally convert to each other
+            const isSpeed1 = ['kmh', 'mph', 'ms'].includes(u1);
+            const isSpeed2 = ['kmh', 'mph', 'ms'].includes(u2);
+            if(catId === 'time' && (isSpeed1 !== isSpeed2)) {
+                if(source === '1') i2.value = 'N/A';
+                else i1.value = 'N/A';
+                return;
+            }
+
+            if (catId === 'temp') {
+                let v1 = parseFloat(i1.value);
+                let v2 = parseFloat(i2.value);
+                
+                if (source === '1') {
+                    if (isNaN(v1)) { i2.value = ''; return; }
+                    let celsius = u1 === 'c' ? v1 : (u1 === 'f' ? (v1 - 32) * 5/9 : v1 - 273.15);
+                    let result = u2 === 'c' ? celsius : (u2 === 'f' ? (celsius * 9/5) + 32 : celsius + 273.15);
+                    i2.value = Number.isInteger(result) ? result : parseFloat(result.toFixed(4));
+                } else {
+                    if (isNaN(v2)) { i1.value = ''; return; }
+                    let celsius = u2 === 'c' ? v2 : (u2 === 'f' ? (v2 - 32) * 5/9 : v2 - 273.15);
+                    let result = u1 === 'c' ? celsius : (u1 === 'f' ? (celsius * 9/5) + 32 : celsius + 273.15);
+                    i1.value = Number.isInteger(result) ? result : parseFloat(result.toFixed(4));
+                }
+            } else {
+                const rates = conversionRates[catId];
+                if (source === '1') {
+                    let val = parseFloat(i1.value);
+                    if (isNaN(val)) { i2.value = ''; return; }
+                    let baseVal = val * rates[u1];
+                    let result = baseVal / rates[u2];
+                    i2.value = parseFloat(result.toPrecision(10));
+                } else {
+                    let val = parseFloat(i2.value);
+                    if (isNaN(val)) { i1.value = ''; return; }
+                    let baseVal = val * rates[u2];
+                    let result = baseVal / rates[u1];
+                    i1.value = parseFloat(result.toPrecision(10));
+                }
+            }
         }
 
         function renderPeriodicTable() {
@@ -541,6 +725,22 @@
             document.getElementById('how-works-desc').innerText = t.howWorksDesc;
 
             document.getElementById('lang-btn').innerText = currentLang === 'es' ? 'English' : 'Español';
+
+            // Actualizar textos del Convertidor
+            document.getElementById('conv-title').innerHTML = `<span class="mr-3 text-indigo-500">🔄</span> ${t.convTitle}`;
+            document.getElementById('conv-cat-label').innerText = t.convCatLabel;
+            
+            const catSelect = document.getElementById('conv-category');
+            const selectedCat = catSelect.value;
+            catSelect.innerHTML = '';
+            convCategories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.id;
+                opt.innerText = translations[currentLang][cat.nameEs];
+                catSelect.appendChild(opt);
+            });
+            catSelect.value = selectedCat;
+            populateConvUnits();
         }
 
         init();
