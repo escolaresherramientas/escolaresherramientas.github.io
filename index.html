@@ -82,6 +82,19 @@
         }
 
         .element:hover .tooltip { display: block; }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+        }
+        
+        .collapsible-content.show {
+            max-height: 1500px;
+            opacity: 1;
+            margin-top: 1.5rem;
+        }
     </style>
 </head>
 <body class="text-slate-900 dark:text-slate-100 bg-pattern min-h-screen transition-colors duration-300">
@@ -108,75 +121,64 @@
         <main class="space-y-12">
             <!-- Temporizador -->
             <section class="bg-white/80 dark:bg-slate-800/80 p-8 rounded-3xl border border-white dark:border-slate-700 shadow-xl">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-2xl font-bold flex items-center dark:text-white" id="timer-title">
-                        <span class="mr-3 text-indigo-500">⏱️</span> Temporizador de Estudio
-                    </h3>
-                </div>
+                <h3 class="text-2xl font-bold flex items-center dark:text-white mb-6" id="timer-title">
+                    <span class="mr-3 text-indigo-500">⏱️</span> Temporizador de Estudio
+                </h3>
                 <div class="flex flex-col items-center justify-center py-4">
-                    <div class="text-7xl md:text-8xl font-black text-indigo-600 dark:text-indigo-400 mb-8 font-mono tracking-wider drop-shadow-sm" id="timer-display">25:00</div>
+                    <div class="text-7xl md:text-8xl font-black text-indigo-600 dark:text-indigo-400 mb-8 font-mono tracking-wider" id="timer-display">25:00</div>
                     <div class="flex space-x-4">
-                        <button onclick="toggleTimer()" id="timer-toggle-btn" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 dark:shadow-none text-lg w-40">Iniciar</button>
-                        <button onclick="resetAppTimer()" id="timer-reset-btn" class="px-8 py-4 bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 rounded-2xl font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition text-lg">Reiniciar</button>
+                        <button onclick="toggleTimer()" id="timer-toggle-btn" class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg text-lg w-40">Iniciar</button>
+                        <button onclick="resetAppTimer()" id="timer-reset-btn" class="px-8 py-4 bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 rounded-2xl font-bold hover:bg-slate-300 transition text-lg">Reiniciar</button>
                     </div>
                 </div>
+                <p id="timer-desc" class="text-sm text-slate-600 dark:text-slate-400 mt-8 text-center max-w-4xl mx-auto leading-relaxed border-t dark:border-slate-700 pt-6">
+                    Optimiza tu tiempo de estudio con nuestro Temporizador Pomodoro. Esta técnica consiste en dividir el tiempo en intervalos de 25 minutos de trabajo intenso seguidos de 5 minutos de descanso. Este método ayuda a mejorar la concentración y evita la fatiga mental, permitiéndote retener mejor la información para tus exámenes.
+                </p>
             </section>
 
             <!-- Tabla Periódica -->
             <section class="bg-white/90 backdrop-blur dark:bg-slate-800/90 p-6 rounded-2xl shadow-xl border border-white/50 dark:border-slate-700 overflow-x-auto">
-                <div class="flex items-center mb-6">
-                    <div class="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg mr-3">
-                        <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-300" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M14.5,3h-5c-0.55,0-1,0.45-1,1v2.53C6.1,8.32,5,11.03,5,14c0,3.87,3.13,7,7,7s7-3.13,7-7c0-2.97-1.1-5.68-3.5-7.47V4 C15.5,3.45,15.05,3,14.5,3z M12,19c-2.76,0-5-2.24-5-5c0-1.74,0.89-3.28,2.25-4.17l1.01-0.66V5h3.48v4.17l1.01,0.66 C16.11,10.72,17,12.26,17,14C17,16.76,14.76,19,12,19z"/>
-                        </svg>
-                    </div>
-                    <h2 class="text-2xl font-black dark:text-white uppercase tracking-tight" id="pt-title">Tabla Periódica Interactiva</h2>
-                </div>
-
-                <!-- Tabla Principal -->
+                <h2 class="text-2xl font-black dark:text-white uppercase tracking-tight mb-6 flex items-center" id="pt-title">
+                    <span class="mr-3 p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg text-emerald-600 dark:text-emerald-300">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.5,3h-5c-0.55,0-1,0.45-1,1v2.53C6.1,8.32,5,11.03,5,14c0,3.87,3.13,7,7,7s7-3.13,7-7c0-2.97-1.1-5.68-3.5-7.47V4 C15.5,3.45,15.05,3,14.5,3z M12,19c-2.76,0-5-2.24-5-5c0-1.74,0.89-3.28,2.25-4.17l1.01-0.66V5h3.48v4.17l1.01,0.66 C16.11,10.72,17,12.26,17,14C17,16.76,14.76,19,12,19z"/></svg>
+                    </span>
+                    Tabla Periódica Interactiva
+                </h2>
                 <div id="periodic-table" class="periodic-table min-w-[1100px] mb-8"></div>
-
-                <!-- Espaciador -->
                 <div class="h-8"></div>
-
-                <!-- Series Inferiores -->
                 <div id="f-block" class="periodic-table min-w-[1100px] max-w-[80%] mx-auto"></div>
-
-                <!-- Información de la Tabla Periódica -->
-                <div class="grid md:grid-cols-2 gap-10 pt-10 border-t border-slate-200 dark:border-slate-700 mt-12">
+                <div class="grid md:grid-cols-2 gap-10 pt-10 border-t dark:border-slate-700 mt-12">
                     <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white dark:border-slate-800">
-                        <h3 class="text-xl font-bold mb-4 dark:text-indigo-300 flex items-center" id="inventor-title">
-                            <span class="mr-2">👨‍🔬</span> ¿Quién la inventó?
-                        </h3>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed" id="inventor-desc">
-                            Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.
-                        </p>
+                        <h3 class="text-xl font-bold mb-4 dark:text-indigo-300" id="inventor-title">👨‍🔬 ¿Quién la inventó?</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed" id="inventor-desc">Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.</p>
                     </div>
                     <div class="bg-white/50 dark:bg-slate-900/50 p-6 rounded-2xl border border-white dark:border-slate-800">
-                        <h3 class="text-xl font-bold mb-4 dark:text-emerald-300 flex items-center" id="how-works-title">
-                            <span class="mr-2">📖</span> ¿Cómo funciona?
-                        </h3>
-                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed" id="how-works-desc">
-                            Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares.
-                        </p>
+                        <h3 class="text-xl font-bold mb-4 dark:text-emerald-300" id="how-works-title">📖 ¿Cómo funciona?</h3>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed" id="how-works-desc">Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares.</p>
                     </div>
                 </div>
+                <p id="pt-desc" class="text-sm text-slate-600 dark:text-slate-400 mt-8 text-center max-w-4xl mx-auto leading-relaxed border-t dark:border-slate-700 pt-6">
+                    Nuestra Tabla Periódica Interactiva es un recurso esencial para estudiantes de química. Además de conocer a sus fundadores, como Dmitri Mendeléyev, esta herramienta permite visualizar la organización de los elementos químicos por su número atómico y propiedades. Es el complemento ideal para repasar valencias, masas atómicas y configuraciones electrónicas.
+                </p>
             </section>
 
             <!-- Calculadora -->
             <section class="bg-white/80 dark:bg-slate-800/80 p-8 rounded-3xl border border-white dark:border-slate-700 shadow-xl">
-                <h3 class="text-2xl font-bold mb-8 flex items-center dark:text-white" id="calc-title">Calculadora de Promedio</h3>
-                <div id="subjects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8"></div>
+                <h3 class="text-2xl font-bold mb-8 dark:text-white" id="calc-title">Calculadora de Promedio</h3>
+                <div id="subjects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"></div>
                 <div class="flex flex-col sm:flex-row items-center justify-between border-t dark:border-slate-700 pt-8 gap-6">
                     <div class="text-center sm:text-left">
                         <span class="text-sm uppercase font-bold text-slate-500 block mb-1" id="result-label">Promedio Final</span>
                         <div class="text-6xl font-black text-indigo-600 dark:text-indigo-400" id="final-average">0.00</div>
                     </div>
-                    <button onclick="resetCalculator()" id="reset-btn" class="px-8 py-4 bg-rose-100 text-rose-600 rounded-2xl font-bold hover:bg-rose-200 transition text-lg border border-rose-200">Reiniciar</button>
+                    <button onclick="resetCalculator()" id="reset-btn" class="px-8 py-4 bg-rose-100 text-rose-600 rounded-2xl font-bold hover:bg-rose-200 transition">Reiniciar</button>
                 </div>
+                <p id="calc-desc" class="text-sm text-slate-600 dark:text-slate-400 mt-8 text-center max-w-4xl mx-auto border-t dark:border-slate-700 pt-6 leading-relaxed">
+                    La Calculadora de Promedio Escolar de Daras está diseñada para que lleves un control exacto de tus notas. Simplemente ingresa tus calificaciones y obtén tu promedio ponderado al instante. Monitorear tu rendimiento académico paso a paso te permite saber cuánto necesitas obtener en tus pruebas finales para alcanzar tus metas.
+                </p>
             </section>
 
-            <!-- Convertidor de Medidas -->
+            <!-- Convertidor -->
             <section class="bg-white/80 dark:bg-slate-800/80 p-8 rounded-3xl border border-white dark:border-slate-700 shadow-xl">
                 <div class="flex items-center mb-6">
                     <h3 class="text-2xl font-bold flex items-center dark:text-white" id="conv-title">
@@ -212,29 +214,62 @@
                         <input type="number" id="conv-input-2" oninput="convertValues('2')" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-3xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white font-black text-center text-indigo-600 dark:text-indigo-400">
                     </div>
                 </div>
+                <p id="conv-desc" class="text-sm text-slate-600 dark:text-slate-400 mt-8 text-center max-w-4xl mx-auto border-t dark:border-slate-700 pt-6 leading-relaxed">
+                    Con el Convertidor de Medidas Universal, ya no tendrás problemas con las tareas de física o matemáticas. Convierte instantáneamente unidades de longitud, masa y temperatura entre el sistema métrico y el imperial. Es una herramienta indispensable para estudiantes que trabajan con bibliografía internacional o necesitan precisión técnica en sus proyectos.
+                </p>
             </section>
         </main>
+
+        <footer class="mt-24 pt-12 border-t border-slate-200 dark:border-slate-700 text-center pb-20">
+            <div class="flex flex-wrap justify-center gap-8 mb-4">
+                <button onclick="toggleFooter('contact')" class="group flex items-center space-x-2 text-sm font-bold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-all">
+                    <span id="contact-btn-text">Contacto</span>
+                    <svg id="contact-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <button onclick="toggleFooter('privacy')" class="group flex items-center space-x-2 text-sm font-bold text-slate-500 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-all">
+                    <span id="privacy-btn-text">Política de Privacidad</span>
+                    <svg id="privacy-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+            </div>
+
+            <div id="contact-content" class="collapsible-content">
+                <div class="bg-white/50 dark:bg-slate-800/50 p-8 rounded-3xl text-left border dark:border-slate-700 max-w-4xl mx-auto shadow-sm">
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed" id="contact-p1">¿Tienes alguna sugerencia para una nueva herramienta escolar o encontraste algún error en nuestros cálculos? ¡Queremos escucharte!</p>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+                        <span id="contact-p2">Puedes ponerte en contacto con el equipo de Daras DesignWeb escribiéndonos directamente a:</span><br>
+                        <a href="mailto:escolaresherramientas@gmail.com" class="text-indigo-600 dark:text-indigo-400 font-bold hover:underline">escolaresherramientas@gmail.com</a>
+                    </p>
+                    <p class="text-xs text-slate-500 dark:text-slate-500 italic" id="contact-p3">Intentamos responder a todas las consultas en un plazo de 24 a 48 horas.</p>
+                </div>
+            </div>
+
+            <div id="privacy-content" class="collapsible-content">
+                <div class="bg-white/50 dark:bg-slate-800/50 p-8 rounded-3xl text-left border dark:border-slate-700 max-w-4xl mx-auto shadow-sm space-y-4">
+                    <h4 class="text-lg font-black dark:text-white border-b dark:border-slate-700 pb-2" id="priv-title">Política de Privacidad</h4>
+                    <div class="text-sm text-slate-600 dark:text-slate-400 space-y-4 leading-relaxed" id="priv-body">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script>
         let currentLang = 'es';
         let isDarkMode = false;
+        let timerInterval;
+        let timeLeft = 1500;
+        let isTimerRunning = false;
 
         const colors = {
-            blue: '#e0f2fe',     // Hidrógeno, Alcalinos, Otros
-            red: '#fee2e2',      // Alcalinotérreos, Halógenos, Gases Nobles
-            purple: '#f3e8ff',   // Metales de transición
-            green: '#dcfce7',    // Metaloides, No metales
-            yellow: '#fef9c3',   // Metales post-transición
-            orange: '#ffedd5',   // Lantánidos
-            brown: '#f5f5f4'     // Actínidos
+            blue: '#e0f2fe', red: '#fee2e2', purple: '#f3e8ff', green: '#dcfce7',
+            yellow: '#fef9c3', orange: '#ffedd5', brown: '#f5f5f4'
         };
 
+        // TABLA PERIÓDICA - 118 ELEMENTOS COMPLETOS
         const elements = [
-            // Fila 1
             { n: 1, s: 'H', name: 'Hidrógeno', en: 'Hydrogen', pos: [1, 1], c: colors.blue },
             { n: 2, s: 'He', name: 'Helio', en: 'Helium', pos: [1, 18], c: colors.red },
-            // Fila 2
             { n: 3, s: 'Li', name: 'Litio', en: 'Lithium', pos: [2, 1], c: colors.blue },
             { n: 4, s: 'Be', name: 'Berilio', en: 'Beryllium', pos: [2, 2], c: colors.red },
             { n: 5, s: 'B', name: 'Boro', en: 'Boron', pos: [2, 13], c: colors.yellow },
@@ -243,7 +278,6 @@
             { n: 8, s: 'O', name: 'Oxígeno', en: 'Oxygen', pos: [2, 16], c: colors.blue },
             { n: 9, s: 'F', name: 'Flúor', en: 'Fluorine', pos: [2, 17], c: colors.blue },
             { n: 10, s: 'Ne', name: 'Neón', en: 'Neon', pos: [2, 18], c: colors.red },
-            // Fila 3
             { n: 11, s: 'Na', name: 'Sodio', en: 'Sodium', pos: [3, 1], c: colors.blue },
             { n: 12, s: 'Mg', name: 'Magnesio', en: 'Magnesium', pos: [3, 2], c: colors.red },
             { n: 13, s: 'Al', name: 'Aluminio', en: 'Aluminum', pos: [3, 13], c: colors.green },
@@ -252,7 +286,6 @@
             { n: 16, s: 'S', name: 'Azufre', en: 'Sulfur', pos: [3, 16], c: colors.blue },
             { n: 17, s: 'Cl', name: 'Cloro', en: 'Chlorine', pos: [3, 17], c: colors.blue },
             { n: 18, s: 'Ar', name: 'Argón', en: 'Argon', pos: [3, 18], c: colors.red },
-            // Fila 4
             { n: 19, s: 'K', name: 'Potasio', en: 'Potassium', pos: [4, 1], c: colors.blue },
             { n: 20, s: 'Ca', name: 'Calcio', en: 'Calcium', pos: [4, 2], c: colors.red },
             { n: 21, s: 'Sc', name: 'Escandio', en: 'Scandium', pos: [4, 3], c: colors.purple },
@@ -271,7 +304,6 @@
             { n: 34, s: 'Se', name: 'Selenio', en: 'Selenium', pos: [4, 16], c: colors.blue },
             { n: 35, s: 'Br', name: 'Bromo', en: 'Bromine', pos: [4, 17], c: colors.blue },
             { n: 36, s: 'Kr', name: 'Kriptón', en: 'Krypton', pos: [4, 18], c: colors.red },
-            // Fila 5
             { n: 37, s: 'Rb', name: 'Rubidio', en: 'Rubidium', pos: [5, 1], c: colors.blue },
             { n: 38, s: 'Sr', name: 'Estroncio', en: 'Strontium', pos: [5, 2], c: colors.red },
             { n: 39, s: 'Y', name: 'Itrio', en: 'Yttrium', pos: [5, 3], c: colors.purple },
@@ -290,7 +322,6 @@
             { n: 52, s: 'Te', name: 'Telurio', en: 'Tellurium', pos: [5, 16], c: colors.yellow },
             { n: 53, s: 'I', name: 'Yodo', en: 'Iodine', pos: [5, 17], c: colors.blue },
             { n: 54, s: 'Xe', name: 'Xenón', en: 'Xenon', pos: [5, 18], c: colors.red },
-            // Fila 6
             { n: 55, s: 'Cs', name: 'Cesio', en: 'Cesium', pos: [6, 1], c: colors.blue },
             { n: 56, s: 'Ba', name: 'Bario', en: 'Barium', pos: [6, 2], c: colors.red },
             { n: 57, s: 'La', name: 'Lantano', en: 'Lanthanum', pos: [6, 3], c: colors.blue },
@@ -309,7 +340,6 @@
             { n: 84, s: 'Po', name: 'Polonio', en: 'Polonium', pos: [6, 16], c: colors.green },
             { n: 85, s: 'At', name: 'Astato', en: 'Astatine', pos: [6, 17], c: colors.green },
             { n: 86, s: 'Rn', name: 'Radón', en: 'Radon', pos: [6, 18], c: colors.red },
-            // Fila 7
             { n: 87, s: 'Fr', name: 'Francio', en: 'Francium', pos: [7, 1], c: colors.blue },
             { n: 88, s: 'Ra', name: 'Radio', en: 'Radium', pos: [7, 2], c: colors.red },
             { n: 89, s: 'Ac', name: 'Actinio', en: 'Actinium', pos: [7, 3], c: colors.orange },
@@ -331,7 +361,6 @@
         ];
 
         const fBlockElements = [
-            // Lantánidos (58-71)
             { n: 58, s: 'Ce', name: 'Cerio', en: 'Cerium', pos: [1, 1], c: colors.blue },
             { n: 59, s: 'Pr', name: 'Praseodimio', en: 'Praseodymium', pos: [1, 2], c: colors.blue },
             { n: 60, s: 'Nd', name: 'Neodimio', en: 'Neodymium', pos: [1, 3], c: colors.blue },
@@ -346,7 +375,6 @@
             { n: 69, s: 'Tm', name: 'Tulio', en: 'Thulium', pos: [1, 12], c: colors.blue },
             { n: 70, s: 'Yb', name: 'Iterbio', en: 'Ytterbium', pos: [1, 13], c: colors.blue },
             { n: 71, s: 'Lu', name: 'Lutecio', en: 'Lutetium', pos: [1, 14], c: colors.blue },
-            // Actínidos (90-103)
             { n: 90, s: 'Th', name: 'Torio', en: 'Thorium', pos: [2, 1], c: colors.orange },
             { n: 91, s: 'Pa', name: 'Protactinio', en: 'Protactinium', pos: [2, 2], c: colors.orange },
             { n: 92, s: 'U', name: 'Uranio', en: 'Uranium', pos: [2, 3], c: colors.orange },
@@ -363,6 +391,7 @@
             { n: 103, s: 'Lr', name: 'Laurencio', en: 'Lawrencium', pos: [2, 14], c: colors.orange },
         ];
 
+        // ASIGNATURAS CALCULADORA - COMPLETAS
         const subjects = [
             { id: 'math', es: 'Matemáticas', en: 'Mathematics' },
             { id: 'science', es: 'Ciencias Naturales', en: 'Science' },
@@ -378,81 +407,14 @@
             { id: 'physc', es: 'Física', en: 'Physics' }
         ];
 
-        const translations = {
-            es: {
-                title: "Herramientas Escolares",
-                calcTitle: "Calculadora de Promedio",
-                resultLabel: "Promedio Final",
-                resetBtn: "Reiniciar",
-                ptTitle: "Tabla Periódica Interactiva",
-                timerTitle: "Temporizador de Estudio",
-                startBtn: "Iniciar",
-                pauseBtn: "Pausar",
-                timerResetBtn: "Reiniciar",
-                inventorTitle: "¿Quién la inventó?",
-                inventorDesc: "Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.",
-                howWorksTitle: "¿Cómo funciona?",
-                howWorksDesc: "Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares.",
-                convTitle: "Convertidor de Medidas",
-                convCatLabel: "Categoría",
-                catLength: "📏 Longitud y Distancia",
-                catWeight: "⚖️ Peso y Masa",
-                catTemp: "🌡️ Temperatura",
-                catVol: "💧 Volumen y Capacidad",
-                catData: "💾 Almacenamiento de Datos",
-                catTime: "⏱️ Tiempo y Velocidad",
-                units: {
-                    km: "Kilómetros (km)", m: "Metros (m)", mi: "Millas (mi)", ft: "Pies (ft)", cm: "Centímetros (cm)", in: "Pulgadas (in)", yd: "Yardas (yd)",
-                    kg: "Kilogramos (kg)", lb: "Libras (lb)", g: "Gramos (g)", oz: "Onzas (oz)", t: "Toneladas (t)",
-                    c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)",
-                    l: "Litros (L)", gal: "Galones americanos (gal)", ml: "Mililitros (ml)", floz: "Onzas líquidas (fl oz)", m3: "Metros cúbicos (m³)",
-                    mb: "Megabytes (MB)", gb: "Gigabytes (GB)", tb: "Terabytes (TB)", kb: "Kilobytes (KB)",
-                    hr: "Horas", min: "Minutos", sec: "Segundos", day: "Días", week: "Semanas", month: "Meses",
-                    kmh: "Kilómetros por hora (km/h)", mph: "Millas por hora (mph)", ms: "Metros por segundo (m/s)"
-                }
-            },
-            en: {
-                title: "School Tools",
-                calcTitle: "Average Calculator",
-                resultLabel: "Final Average",
-                resetBtn: "Reset",
-                ptTitle: "Interactive Periodic Table",
-                timerTitle: "Study Timer",
-                startBtn: "Start",
-                pauseBtn: "Pause",
-                timerResetBtn: "Reset",
-                inventorTitle: "Who invented it?",
-                inventorDesc: "It was primarily designed by the Russian chemist Dmitri Mendeleev in 1869, who organized known elements by atomic mass and predicted undiscovered ones.",
-                howWorksTitle: "How does it work?",
-                howWorksDesc: "It organizes elements in rows (periods) and columns (groups) based on atomic number. Elements in the same column usually have similar chemical properties.",
-                convTitle: "Unit Converter",
-                convCatLabel: "Category",
-                catLength: "📏 Length & Distance",
-                catWeight: "⚖️ Weight & Mass",
-                catTemp: "🌡️ Temperature",
-                catVol: "💧 Volume & Capacity",
-                catData: "💾 Data Storage",
-                catTime: "⏱️ Time & Speed",
-                units: {
-                    km: "Kilometers (km)", m: "Meters (m)", mi: "Miles (mi)", ft: "Feet (ft)", cm: "Centimeters (cm)", in: "Inches (in)", yd: "Yards (yd)",
-                    kg: "Kilograms (kg)", lb: "Pounds (lb)", g: "Grams (g)", oz: "Ounces (oz)", t: "Tons (t)",
-                    c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)",
-                    l: "Liters (L)", gal: "US Gallons (gal)", ml: "Milliliters (ml)", floz: "Fluid Ounces (fl oz)", m3: "Cubic Meters (m³)",
-                    mb: "Megabytes (MB)", gb: "Gigabytes (GB)", tb: "Terabytes (TB)", kb: "Kilobytes (KB)",
-                    hr: "Hours", min: "Minutes", sec: "Seconds", day: "Days", week: "Weeks", month: "Months",
-                    kmh: "Kilometers per hour (km/h)", mph: "Miles per hour (mph)", ms: "Meters per second (m/s)"
-                }
-            }
-        };
-
-        // --- Converter State & Rates ---
+        // CONVERTIDOR LÓGICA Y DATOS - COMPLETOS
         const convCategories = [
             { id: 'length', nameEs: 'catLength', units: ['km', 'm', 'mi', 'ft', 'cm', 'in', 'yd'] },
             { id: 'weight', nameEs: 'catWeight', units: ['kg', 'lb', 'g', 'oz', 't'] },
             { id: 'temp', nameEs: 'catTemp', units: ['c', 'f', 'k'] },
             { id: 'vol', nameEs: 'catVol', units: ['l', 'gal', 'ml', 'floz', 'm3'] },
             { id: 'data', nameEs: 'catData', units: ['mb', 'gb', 'tb', 'kb'] },
-            { id: 'time', nameEs: 'catTime', units: ['hr', 'min', 'sec', 'day', 'week', 'month', 'kmh', 'mph', 'ms'] } // Tiempo y velocidad agrupados
+            { id: 'time', nameEs: 'catTime', units: ['hr', 'min', 'sec', 'day', 'week', 'month', 'kmh', 'mph', 'ms'] }
         ];
 
         const conversionRates = {
@@ -461,77 +423,251 @@
             vol: { l: 1, gal: 3.78541, ml: 0.001, floz: 0.0295735, m3: 1000 },
             data: { mb: 1, gb: 1024, tb: 1048576, kb: 1/1024 },
             time: { 
-                hr: 1, min: 1/60, sec: 1/3600, day: 24, week: 168, month: 730.001, // Time based in hours
-                kmh: 1, mph: 1.609344, ms: 3.6 // Speed treated similarly structurally (isolated from time formulas below if needed, but handled by direct scalar mult)
+                hr: 1, min: 1/60, sec: 1/3600, day: 24, week: 168, month: 730.001, 
+                kmh: 1, mph: 1.609344, ms: 3.6 
             }
         };
 
-        // --- Timer State ---
-        let timerInterval;
-        let timeLeft = 1500; // 25 minutos
-        let isTimerRunning = false;
+        // TRADUCCIONES COMPLETAS (Incluye Convertidor, SEO, Contacto y Privacidad)
+        const translations = {
+            es: {
+                mainTitle: "Herramientas Escolares",
+                timerTitle: "Temporizador de Estudio",
+                start: "Iniciar", pause: "Pausar", reset: "Reiniciar",
+                timerDesc: "Optimiza tu tiempo de estudio con nuestro Temporizador Pomodoro. Esta técnica consiste en dividir el tiempo en intervalos de 25 minutos de trabajo intenso seguidos de 5 minutos de descanso. Este método ayuda a mejorar la concentración y evita la fatiga mental, permitiéndote retener mejor la información para tus exámenes.",
+                ptTitle: "Tabla Periódica Interactiva",
+                inventorT: "👨‍🔬 ¿Quién la inventó?", inventorD: "Fue diseñada principalmente por el químico ruso Dmitri Mendeléyev en 1869, quien organizó los elementos conocidos por su masa atómica y predijo la existencia de elementos aún no descubiertos.",
+                worksT: "📖 ¿Cómo funciona?", worksD: "Organiza los elementos en filas (períodos) y columnas (grupos) basándose en su número atómico. Los elementos en la misma columna suelen tener propiedades químicas similares.",
+                ptDesc: "Nuestra Tabla Periódica Interactiva es un recurso esencial para estudiantes de química. Además de conocer a sus fundadores, como Dmitri Mendeléyev, esta herramienta permite visualizar la organización de los elementos químicos por su número atómico y propiedades. Es el complemento ideal para repasar valencias, masas atómicas y configuraciones electrónicas.",
+                calcTitle: "Calculadora de Promedio", resultL: "Promedio Final",
+                calcDesc: "La Calculadora de Promedio Escolar de Daras está diseñada para que lleves un control exacto de tus notas. Simplemente ingresa tus calificaciones y obtén tu promedio ponderado al instante. Monitorear tu rendimiento académico paso a paso te permite saber cuánto necesitas obtener en tus pruebas finales para alcanzar tus metas.",
+                
+                // Convertidor Textos
+                convTitle: "Convertidor de Medidas", convCatLabel: "Categoría",
+                catLength: "📏 Longitud y Distancia", catWeight: "⚖️ Peso y Masa", catTemp: "🌡️ Temperatura",
+                catVol: "💧 Volumen y Capacidad", catData: "💾 Almacenamiento de Datos", catTime: "⏱️ Tiempo y Velocidad",
+                units: {
+                    km: "Kilómetros (km)", m: "Metros (m)", mi: "Millas (mi)", ft: "Pies (ft)", cm: "Centímetros (cm)", in: "Pulgadas (in)", yd: "Yardas (yd)",
+                    kg: "Kilogramos (kg)", lb: "Libras (lb)", g: "Gramos (g)", oz: "Onzas (oz)", t: "Toneladas (t)",
+                    c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)",
+                    l: "Litros (L)", gal: "Galones americanos (gal)", ml: "Mililitros (ml)", floz: "Onzas líquidas (fl oz)", m3: "Metros cúbicos (m³)",
+                    mb: "Megabytes (MB)", gb: "Gigabytes (GB)", tb: "Terabytes (TB)", kb: "Kilobytes (KB)",
+                    hr: "Horas", min: "Minutos", sec: "Segundos", day: "Días", week: "Semanas", month: "Meses",
+                    kmh: "Kilómetros por hora (km/h)", mph: "Millas por hora (mph)", ms: "Metros por segundo (m/s)"
+                },
+                convDesc: "Con el Convertidor de Medidas Universal, ya no tendrás problemas con las tareas de física o matemáticas. Convierte instantáneamente unidades de longitud, masa y temperatura entre el sistema métrico y el imperial. Es una herramienta indispensable para estudiantes que trabajan con bibliografía internacional o necesitan precisión técnica en sus proyectos.",
+                
+                // Footer
+                contactB: "Contacto", privB: "Política de Privacidad",
+                contactP1: "¿Tienes alguna sugerencia para una nueva herramienta escolar o encontraste algún error en nuestros cálculos? ¡Queremos escucharte!",
+                contactP2: "Puedes ponerte en contacto con el equipo de Daras DesignWeb escribiéndonos directamente a:",
+                contactP3: "Intentamos responder a todas las consultas en un plazo de 24 a 48 horas.",
+                privTitle: "Título: Política de Privacidad",
+                privContent: `<p>En <strong>Herramientas Escolares</strong>, operado por <strong>Daras DesignWeb</strong>, la privacidad de nuestros visitantes es una de nuestras principales prioridades. Este documento describe los tipos de información que son recopilados y registrados por nuestro sitio y cómo los utilizamos.</p>
+                    <p><strong>1. Procesamiento de Datos Locales:</strong> Garantizamos que toda la información ingresada en nuestras herramientas, incluyendo la Calculadora de Promedio y los convertidores de unidades, se procesa exclusivamente de forma local en su navegador. No recopilamos, almacenamos ni enviamos estos datos a servidores externos.</p>
+                    <p><strong>2. Google AdSense y Cookies:</strong> Utilizamos Google AdSense para mostrar anuncios. Google, como proveedor de terceros, utiliza cookies para publicar anuncios en este sitio basados en las visitas anteriores de los usuarios. El uso de la cookie de DART permite a Google y a sus socios mostrar anuncios basados en su visita a este y otros sitios en Internet.</p>
+                    <p><strong>3. Control de Privacidad:</strong> Los usuarios pueden elegir inhabilitar el uso de la cookie de DART visitando la Política de Privacidad de la red de publicidad y contenido de Google. No tenemos acceso ni control sobre las cookies que utilizan los proveedores de anuncios de terceros.</p>
+                    <p><strong>4. Consentimiento y Menores:</strong> Al utilizar nuestro sitio web, usted acepta los términos de esta Política de Privacidad. Como sitio enfocado en herramientas educativas, no solicitamos ni recopilamos intencionadamente información personal de identificación de menores de edad.</p>
+                    <p class="text-xs font-bold pt-4 border-t dark:border-slate-700 mt-4">Última actualización: Mayo de 2026.</p>`
+            },
+            en: {
+                mainTitle: "School Tools",
+                timerTitle: "Study Timer",
+                start: "Start", pause: "Pause", reset: "Reset",
+                timerDesc: "Optimize your study time with our Pomodoro Timer. This technique involves dividing time into 25-minute intervals of intense work followed by a 5-minute break. This method helps improve concentration and prevents mental fatigue, allowing you to better retain information for your exams.",
+                ptTitle: "Interactive Periodic Table",
+                inventorT: "👨‍🔬 Who invented it?", inventorD: "It was primarily designed by the Russian chemist Dmitri Mendeleev in 1869, who organized known elements by atomic mass and predicted undiscovered ones.",
+                worksT: "📖 How does it work?", worksD: "It organizes elements in rows (periods) and columns (groups) based on atomic number. Elements in the same column usually have similar chemical properties.",
+                ptDesc: "Our Interactive Periodic Table is an essential resource for chemistry students. In addition to learning about its founders, like Dmitri Mendeleev, this tool allows you to visualize the organization of chemical elements by their atomic number and properties. It is the ideal complement for reviewing valences, atomic masses, and electron configurations.",
+                calcTitle: "Average Calculator", resultL: "Final Average",
+                calcDesc: "Daras' School Average Calculator is designed for you to keep an exact track of your grades. Simply enter your grades and get your weighted average instantly. Monitoring your academic performance step by step allows you to know how much you need to score on your final tests to reach your goals.",
+                
+                // Convertidor Textos
+                convTitle: "Unit Converter", convCatLabel: "Category",
+                catLength: "📏 Length & Distance", catWeight: "⚖️ Weight & Mass", catTemp: "🌡️ Temperature",
+                catVol: "💧 Volume & Capacity", catData: "💾 Data Storage", catTime: "⏱️ Time & Speed",
+                units: {
+                    km: "Kilometers (km)", m: "Meters (m)", mi: "Miles (mi)", ft: "Feet (ft)", cm: "Centimeters (cm)", in: "Inches (in)", yd: "Yards (yd)",
+                    kg: "Kilograms (kg)", lb: "Pounds (lb)", g: "Grams (g)", oz: "Ounces (oz)", t: "Tons (t)",
+                    c: "Celsius (°C)", f: "Fahrenheit (°F)", k: "Kelvin (K)",
+                    l: "Liters (L)", gal: "US Gallons (gal)", ml: "Milliliters (ml)", floz: "Fluid Ounces (fl oz)", m3: "Cubic Meters (m³)",
+                    mb: "Megabytes (MB)", gb: "Gigabytes (GB)", tb: "Terabytes (TB)", kb: "Kilobytes (KB)",
+                    hr: "Hours", min: "Minutes", sec: "Seconds", day: "Days", week: "Weeks", month: "Months",
+                    kmh: "Kilometers per hour (km/h)", mph: "Miles per hour (mph)", ms: "Meters per second (m/s)"
+                },
+                convDesc: "With the Universal Unit Converter, you will no longer have problems with physics or math homework. Instantly convert units of length, mass, and temperature between the metric and imperial systems. It is an indispensable tool for students working with international literature or needing technical precision in their projects.",
+                
+                // Footer
+                contactB: "Contact", privB: "Privacy Policy",
+                contactP1: "Do you have any suggestions for a new school tool or found an error in our calculations? We want to hear from you!",
+                contactP2: "You can contact the Daras DesignWeb team directly at:",
+                contactP3: "We try to respond to all inquiries within 24 to 48 hours.",
+                privTitle: "Title: Privacy Policy",
+                privContent: `<p>At <strong>School Tools</strong>, operated by <strong>Daras DesignWeb</strong>, visitor privacy is a top priority. This document describes the types of information collected and how we use it.</p>
+                    <p><strong>1. Local Data Processing:</strong> We guarantee that all information entered in our tools, including the Average Calculator and unit converters, is processed exclusively locally in your browser. We do not collect, store, or send this data to external servers.</p>
+                    <p><strong>2. Google AdSense and Cookies:</strong> We use Google AdSense to show ads. Google, as a third-party vendor, uses cookies to serve ads on this site based on users' previous visits. The use of the DART cookie enables Google and its partners to serve ads based on your visit to this and other sites on the Internet.</p>
+                    <p><strong>3. Privacy Control:</strong> Users may opt out of the use of the DART cookie by visiting the Google ad and content network privacy policy. We have no access to or control over these cookies used by third-party advertisers.</p>
+                    <p><strong>4. Consent and Minors:</strong> By using our website, you hereby consent to our Privacy Policy. As a site focused on educational tools, we do not knowingly collect personal identifiable information from children.</p>
+                    <p class="text-xs font-bold pt-4 border-t dark:border-slate-700 mt-4">Last update: May 2026.</p>`
+            }
+        };
 
         function init() {
             renderPeriodicTable();
             renderCalculator();
             populateConvCategories();
-            updateLanguageUI();
-            updateTimerDisplay();
+            updateUI();
         }
 
-        // --- Timer Functions ---
-        function updateTimerDisplay() {
-            const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
-            const s = (timeLeft % 60).toString().padStart(2, '0');
-            document.getElementById('timer-display').innerText = `${m}:${s}`;
-        }
+        // CONTROLADOR DE PIE DE PÁGINA (Contacto / Privacidad)
+        function toggleFooter(id) {
+            const contact = document.getElementById('contact-content');
+            const privacy = document.getElementById('privacy-content');
+            const cChev = document.getElementById('contact-chevron');
+            const pChev = document.getElementById('privacy-chevron');
 
-        function toggleTimer() {
-            const btn = document.getElementById('timer-toggle-btn');
-            if (isTimerRunning) {
-                clearInterval(timerInterval);
-                isTimerRunning = false;
-                btn.innerText = translations[currentLang].startBtn;
-                btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
-                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            if (id === 'contact') {
+                privacy.classList.remove('show'); pChev.classList.remove('rotate-180');
+                contact.classList.toggle('show'); cChev.classList.toggle('rotate-180');
             } else {
-                isTimerRunning = true;
-                btn.innerText = translations[currentLang].pauseBtn;
-                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
-                btn.classList.add('bg-amber-500', 'hover:bg-amber-600');
-                
-                timerInterval = setInterval(() => {
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        updateTimerDisplay();
-                    } else {
-                        clearInterval(timerInterval);
-                        isTimerRunning = false;
-                        btn.innerText = translations[currentLang].startBtn;
-                        btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
-                        btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
-                        // Efecto visual al terminar
-                        const display = document.getElementById('timer-display');
-                        display.classList.add('text-rose-500');
-                        setTimeout(() => display.classList.remove('text-rose-500'), 3000);
-                    }
-                }, 1000);
+                contact.classList.remove('show'); cChev.classList.remove('rotate-180');
+                privacy.classList.toggle('show'); pChev.classList.toggle('rotate-180');
             }
         }
 
-        function resetAppTimer() {
-            clearInterval(timerInterval);
-            isTimerRunning = false;
-            timeLeft = 1500; // Reset a 25 mins
-            updateTimerDisplay();
+        // CONTROLADOR DE IDIOMA E INTERFAZ
+        function toggleLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            updateUI();
             
-            const btn = document.getElementById('timer-toggle-btn');
-            btn.innerText = translations[currentLang].startBtn;
-            btn.classList.remove('bg-amber-500', 'hover:bg-amber-600');
-            btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+            // Re-render items that depend on translated arrays
+            document.getElementById('periodic-table').innerHTML = '';
+            document.getElementById('f-block').innerHTML = '';
+            renderPeriodicTable();
+            renderCalculator();
+            
+            // Re-populate converter with current language and keep selected category
+            const catSelect = document.getElementById('conv-category');
+            const selectedCat = catSelect.value;
+            populateConvCategories();
+            catSelect.value = selectedCat;
+            populateConvUnits(); 
         }
 
-        // --- Converter Functions ---
+        function updateUI() {
+            const t = translations[currentLang];
+            document.getElementById('main-title').innerText = t.mainTitle;
+            document.getElementById('timer-title').innerHTML = `<span class="mr-3 text-indigo-500">⏱️</span> ${t.timerTitle}`;
+            document.getElementById('timer-desc').innerText = t.timerDesc;
+            document.getElementById('timer-toggle-btn').innerText = isTimerRunning ? t.pause : t.start;
+            document.getElementById('timer-reset-btn').innerText = t.reset;
+            
+            document.getElementById('pt-title').innerHTML = `<span class="mr-3 p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg text-emerald-600 dark:text-emerald-300"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M14.5,3h-5c-0.55,0-1,0.45-1,1v2.53C6.1,8.32,5,11.03,5,14c0,3.87,3.13,7,7,7s7-3.13,7-7c0-2.97-1.1-5.68-3.5-7.47V4 C15.5,3.45,15.05,3,14.5,3z M12,19c-2.76,0-5-2.24-5-5c0-1.74,0.89-3.28,2.25-4.17l1.01-0.66V5h3.48v4.17l1.01,0.66 C16.11,10.72,17,12.26,17,14C17,16.76,14.76,19,12,19z"/></svg></span>${t.ptTitle}`;
+            document.getElementById('inventor-title').innerText = t.inventorT;
+            document.getElementById('inventor-desc').innerText = t.inventorD;
+            document.getElementById('how-works-title').innerText = t.worksT;
+            document.getElementById('how-works-desc').innerText = t.worksD;
+            document.getElementById('pt-desc').innerText = t.ptDesc;
+            
+            document.getElementById('calc-title').innerText = t.calcTitle;
+            document.getElementById('result-label').innerText = t.resultL;
+            document.getElementById('reset-btn').innerText = t.reset;
+            document.getElementById('calc-desc').innerText = t.calcDesc;
+            
+            document.getElementById('conv-title').innerHTML = `<span class="mr-3 text-indigo-500">🔄</span> ${t.convTitle}`;
+            document.getElementById('conv-cat-label').innerText = t.convCatLabel;
+            document.getElementById('conv-desc').innerText = t.convDesc;
+            
+            document.getElementById('contact-btn-text').innerText = t.contactB;
+            document.getElementById('privacy-btn-text').innerText = t.privB;
+            document.getElementById('contact-p1').innerText = t.contactP1;
+            document.getElementById('contact-p2').innerText = t.contactP2;
+            document.getElementById('contact-p3').innerText = t.contactP3;
+            
+            document.getElementById('priv-title').innerText = t.privTitle;
+            document.getElementById('priv-body').innerHTML = t.privContent;
+            
+            document.getElementById('lang-btn').innerText = currentLang === 'es' ? "English" : "Español";
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark');
+            document.getElementById('sun-icon').classList.toggle('hidden');
+            document.getElementById('moon-icon').classList.toggle('hidden');
+        }
+
+        // FUNCIONES DE TABLA PERIÓDICA
+        function renderPeriodicTable() {
+            const table = document.getElementById('periodic-table');
+            const fBlock = document.getElementById('f-block');
+            
+            elements.forEach(el => table.appendChild(createElementCard(el)));
+            fBlockElements.forEach(el => fBlock.appendChild(createElementCard(el)));
+        }
+
+        function createElementCard(el) {
+            const card = document.createElement('div');
+            card.className = 'element';
+            card.style.gridRow = el.pos[0];
+            card.style.gridColumn = el.pos[1];
+            card.style.backgroundColor = el.c;
+            
+            // Configurar color de texto según contraste
+            let txtColor = '#1e293b';
+            if (el.c === colors.purple) txtColor = '#581c87';
+            if (el.c === colors.blue) txtColor = '#0369a1';
+            if (el.c === colors.red) txtColor = '#b91c1c';
+            if (el.c === colors.yellow) txtColor = '#a16207';
+            if (el.c === colors.green) txtColor = '#15803d';
+            if (el.c === colors.orange) txtColor = '#9a3412';
+            card.style.color = txtColor;
+            
+            card.innerHTML = `
+                <span class="element-number">${el.n}</span>
+                <span class="element-symbol">${el.s}</span>
+                <span class="element-name">${currentLang === 'es' ? el.name : el.en}</span>
+                <div class="tooltip">Elemento ${el.n}: ${currentLang === 'es' ? el.name : el.en}</div>
+            `;
+            return card;
+        }
+
+        // FUNCIONES DE CALCULADORA
+        function renderCalculator() {
+            const container = document.getElementById('subjects-container');
+            container.innerHTML = '';
+            subjects.forEach(s => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-2 uppercase">${s[currentLang]}</label>
+                    <input type="number" min="0" max="100" oninput="calcAvg()" class="grade-input w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl font-black text-center outline-none focus:border-indigo-500 dark:text-white" placeholder="0">
+                `;
+                container.appendChild(div);
+            });
+            calcAvg();
+        }
+
+        function calcAvg() {
+            const inputs = document.querySelectorAll('.grade-input');
+            let sum = 0, count = 0;
+            inputs.forEach(i => {
+                let val = parseFloat(i.value);
+                if(!isNaN(val)) {
+                    if(val > 100) { val = 100; i.value = 100; }
+                    if(val < 0) { val = 0; i.value = 0; }
+                    sum += val; 
+                    count++; 
+                }
+            });
+            document.getElementById('final-average').innerText = count > 0 ? (sum/count).toFixed(2) : "0.00";
+        }
+
+        function resetCalculator() {
+            document.querySelectorAll('.grade-input').forEach(i => i.value = '');
+            calcAvg();
+        }
+
+        // FUNCIONES DEL CONVERTIDOR COMPLETO
         function populateConvCategories() {
             const select = document.getElementById('conv-category');
             select.innerHTML = '';
@@ -578,8 +714,7 @@
             const i1 = document.getElementById('conv-input-1');
             const i2 = document.getElementById('conv-input-2');
 
-            // Handling mixing of Time and Speed metrics natively without overlapping errors 
-            // since their scalar base values don't naturally convert to each other
+            // Separar tiempo vs velocidad para que no se mezclen
             const isSpeed1 = ['kmh', 'mph', 'ms'].includes(u1);
             const isSpeed2 = ['kmh', 'mph', 'ms'].includes(u2);
             if(catId === 'time' && (isSpeed1 !== isSpeed2)) {
@@ -621,126 +756,26 @@
             }
         }
 
-        function renderPeriodicTable() {
-            const table = document.getElementById('periodic-table');
-            const fBlock = document.getElementById('f-block');
-            
-            elements.forEach(el => table.appendChild(createElementCard(el)));
-            fBlockElements.forEach(el => fBlock.appendChild(createElementCard(el)));
+        // FUNCIONES DE TEMPORIZADOR
+        function toggleTimer() {
+            if (isTimerRunning) { clearInterval(timerInterval); }
+            else { timerInterval = setInterval(() => { if(timeLeft > 0) { timeLeft--; updateTimer(); } }, 1000); }
+            isTimerRunning = !isTimerRunning;
+            updateUI();
         }
 
-        function createElementCard(el) {
-            const card = document.createElement('div');
-            card.className = 'element';
-            card.style.gridRow = el.pos[0];
-            card.style.gridColumn = el.pos[1];
-            card.style.backgroundColor = el.c;
-            card.style.color = getContrastColor(el.c);
-            
-            card.innerHTML = `
-                <span class="element-number">${el.n}</span>
-                <span class="element-symbol">${el.s}</span>
-                <span class="element-name">${currentLang === 'es' ? el.name : el.en}</span>
-                <div class="tooltip">Elemento ${el.n}: ${el.name}</div>
-            `;
-            return card;
+        function updateTimer() {
+            const m = Math.floor(timeLeft/60).toString().padStart(2, '0');
+            const s = (timeLeft%60).toString().padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${m}:${s}`;
         }
 
-        function getContrastColor(hex) {
-            // Basado en el color de la imagen (texto oscuro para todos excepto quizás actínidos muy oscuros)
-            // Aquí simplificamos para que combine con la estética de la imagen
-            if (hex === colors.purple) return '#581c87';
-            if (hex === colors.blue) return '#0369a1';
-            if (hex === colors.red) return '#b91c1c';
-            if (hex === colors.yellow) return '#a16207';
-            if (hex === colors.green) return '#15803d';
-            if (hex === colors.orange) return '#9a3412';
-            return '#1e293b';
-        }
-
-        function renderCalculator() {
-            const container = document.getElementById('subjects-container');
-            container.innerHTML = '';
-            subjects.forEach(s => {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <label class="block text-sm font-bold text-slate-500 dark:text-slate-400 mb-2">${s[currentLang]}</label>
-                    <input type="number" min="0" max="100" oninput="calculateAverage()" class="grade-input w-full p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-lg outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white" placeholder="0-100">
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function calculateAverage() {
-            const inputs = document.querySelectorAll('.grade-input');
-            let total = 0, count = 0;
-            inputs.forEach(i => {
-                let val = parseFloat(i.value);
-                if(!isNaN(val)) {
-                    if(val > 100) { val = 100; i.value = 100; }
-                    if(val < 0) { val = 0; i.value = 0; }
-                    total += val; 
-                    count++; 
-                }
-            });
-            document.getElementById('final-average').innerText = count ? (total/count).toFixed(2) : '0.00';
-        }
-
-        function resetCalculator() {
-            document.querySelectorAll('.grade-input').forEach(i => i.value = '');
-            calculateAverage();
-        }
-
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            document.documentElement.classList.toggle('dark');
-            document.getElementById('sun-icon').classList.toggle('hidden');
-            document.getElementById('moon-icon').classList.toggle('hidden');
-        }
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'es' ? 'en' : 'es';
-            document.getElementById('periodic-table').innerHTML = '';
-            document.getElementById('f-block').innerHTML = '';
-            renderPeriodicTable();
-            renderCalculator();
-            updateLanguageUI();
-        }
-
-        function updateLanguageUI() {
-            const t = translations[currentLang];
-            document.getElementById('main-title').innerText = t.title;
-            document.getElementById('calc-title').innerText = t.calcTitle;
-            document.getElementById('result-label').innerText = t.resultLabel;
-            document.getElementById('reset-btn').innerText = t.resetBtn;
-            document.getElementById('pt-title').innerText = t.ptTitle;
-            
-            // Textos del temporizador y de la tabla
-            document.getElementById('timer-title').innerHTML = `<span class="mr-3 text-indigo-500">⏱️</span> ${t.timerTitle}`;
-            document.getElementById('timer-toggle-btn').innerText = isTimerRunning ? t.pauseBtn : t.startBtn;
-            document.getElementById('timer-reset-btn').innerText = t.timerResetBtn;
-            document.getElementById('inventor-title').innerHTML = `<span class="mr-2">👨‍🔬</span> ${t.inventorTitle}`;
-            document.getElementById('inventor-desc').innerText = t.inventorDesc;
-            document.getElementById('how-works-title').innerHTML = `<span class="mr-2">📖</span> ${t.howWorksTitle}`;
-            document.getElementById('how-works-desc').innerText = t.howWorksDesc;
-
-            document.getElementById('lang-btn').innerText = currentLang === 'es' ? 'English' : 'Español';
-
-            // Actualizar textos del Convertidor
-            document.getElementById('conv-title').innerHTML = `<span class="mr-3 text-indigo-500">🔄</span> ${t.convTitle}`;
-            document.getElementById('conv-cat-label').innerText = t.convCatLabel;
-            
-            const catSelect = document.getElementById('conv-category');
-            const selectedCat = catSelect.value;
-            catSelect.innerHTML = '';
-            convCategories.forEach(cat => {
-                const opt = document.createElement('option');
-                opt.value = cat.id;
-                opt.innerText = translations[currentLang][cat.nameEs];
-                catSelect.appendChild(opt);
-            });
-            catSelect.value = selectedCat;
-            populateConvUnits();
+        function resetAppTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timeLeft = 1500;
+            updateTimer();
+            updateUI();
         }
 
         init();
